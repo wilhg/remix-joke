@@ -1,52 +1,38 @@
-import type {
-  LinksFunction,
-  LoaderFunction,
-  MetaFunction,
-} from "@remix-run/node";
-import { json } from "@remix-run/node";
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react";
-
-import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getUser } from "./session.server";
+import globalStylesUrl from "./styles/global.css";
+import globalMediumStylesUrl from "./styles/global-medium.css";
+import globalLargeStylesUrl from "./styles/global-large.css";
+import { LinksFunction } from "@remix-run/server-runtime";
+import { Links, LiveReload, Outlet } from "@remix-run/react";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
-};
-
-export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "Remix Notes",
-  viewport: "width=device-width,initial-scale=1",
-});
-
-type LoaderData = {
-  user: Awaited<ReturnType<typeof getUser>>;
-};
-
-export const loader: LoaderFunction = async ({ request }) => {
-  return json<LoaderData>({
-    user: await getUser(request),
-  });
+  return [
+    {
+      rel: "stylesheet",
+      href: globalStylesUrl,
+    },
+    {
+      rel: "stylesheet",
+      href: globalMediumStylesUrl,
+      media: "print, (min-width: 640px)",
+    },
+    {
+      rel: "stylesheet",
+      href: globalLargeStylesUrl,
+      media: "screen and (min-width: 1024px)",
+    },
+  ];
 };
 
 export default function App() {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en">
       <head>
-        <Meta />
+        <meta charSet="utf-8" />
+        <title>Remix: So great, it's funny!</title>
         <Links />
       </head>
-      <body className="h-full">
+      <body>
         <Outlet />
-        <ScrollRestoration />
-        <Scripts />
         <LiveReload />
       </body>
     </html>
